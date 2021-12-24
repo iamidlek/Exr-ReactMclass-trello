@@ -1,12 +1,8 @@
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult,
-} from "react-beautiful-dnd";
+import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { toDoState } from "./atoms";
+import DragabbleCard from "./Components/DragabbleCard";
 
 const Wrapper = styled.div`
   display: flex;
@@ -17,13 +13,11 @@ const Wrapper = styled.div`
   align-items: center;
   height: 100vh;
 `;
-
 const Boards = styled.div`
   display: grid;
   width: 100%;
   grid-template-columns: repeat(1, 1fr);
 `;
-
 const Board = styled.div`
   padding: 20px 10px;
   padding-top: 30px;
@@ -32,30 +26,14 @@ const Board = styled.div`
   min-height: 200px;
 `;
 
-const Card = styled.div`
-  border-radius: 5px;
-  margin-bottom: 5px;
-  padding: 10px 10px;
-  background-color: ${(props) => props.theme.cardColor};
-`;
-
 function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
-  // 드래그가 끝나면 실행할 내용
   const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
     if (!destination) return;
     setToDos((oldToDos) => {
       const toDosCopy = [...oldToDos];
-      // 1) Delete item on source.index
-      console.log("Delete item on", source.index);
-      console.log(toDosCopy);
       toDosCopy.splice(source.index, 1);
-      console.log("Deleted item");
-      console.log(toDosCopy);
-      // 2) Put back the item on the destination.index
-      console.log("Put back", draggableId, "on ", destination.index);
       toDosCopy.splice(destination?.index, 0, draggableId);
-      console.log(toDosCopy);
       return toDosCopy;
     });
   };
@@ -67,19 +45,8 @@ function App() {
             {(magic) => (
               <Board ref={magic.innerRef} {...magic.droppableProps}>
                 {toDos.map((toDo, index) => (
-                  <Draggable key={toDo} draggableId={toDo} index={index}>
-                    {(magic) => (
-                      <Card
-                        ref={magic.innerRef}
-                        {...magic.dragHandleProps}
-                        {...magic.draggableProps}
-                      >
-                        {toDo}
-                      </Card>
-                    )}
-                  </Draggable>
+                  <DragabbleCard key={toDo} index={index} toDo={toDo} />
                 ))}
-                {/* 변경중에 board의 사이즈가 변하는 것을 방지 */}
                 {magic.placeholder}
               </Board>
             )}
@@ -89,5 +56,4 @@ function App() {
     </DragDropContext>
   );
 }
-
 export default App;
