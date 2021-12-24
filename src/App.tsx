@@ -25,7 +25,7 @@ function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
   const onDragEnd = (info: DropResult) => {
     console.log(info);
-    const { destination, draggableId, source } = info;
+    const { destination, source } = info;
     // destination이 undefined일 경우 kill function
     if (!destination) return;
     // same board movement.
