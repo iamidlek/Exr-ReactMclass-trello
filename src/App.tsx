@@ -26,6 +26,8 @@ function App() {
   const onDragEnd = (info: DropResult) => {
     console.log(info);
     const { destination, draggableId, source } = info;
+    // destination이 undefined일 경우 kill function
+    if (!destination) return;
     // same board movement.
     if (destination?.droppableId === source.droppableId) {
       setToDos((allBoards) => {
@@ -37,6 +39,21 @@ function App() {
           ...allBoards,
           // 해당 보드만 갱신
           [source.droppableId]: boardCopy,
+        };
+      });
+    }
+    if (destination.droppableId !== source.droppableId) {
+      // cross board movement
+      setToDos((allBoards) => {
+        // 기존 보드와 이동할 보드를 복사
+        const sourceBoard = [...allBoards[source.droppableId]];
+        const destinationBoard = [...allBoards[destination.droppableId]];
+        sourceBoard.splice(source.index, 1);
+        destinationBoard.splice(destination.index, 0, draggableId);
+        return {
+          ...allBoards,
+          [source.droppableId]: sourceBoard,
+          [destination.droppableId]: destinationBoard,
         };
       });
     }
