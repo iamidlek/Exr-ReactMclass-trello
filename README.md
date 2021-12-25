@@ -2,11 +2,11 @@
 
 ## Challenge
 
-[x] Own styling
-[x] user can create New Board
-[x] Changeable order(Boards)
-[] Removable(Board, Card)
-[] Use localStorage
+- [x] Own styling
+- [x] user can create New Board
+- [x] Changeable order(Boards)
+- [ ] Removable(Board, Card)
+- [ ] Use localStorage
 
 ## react-beautiful-dnd
 
