@@ -14,6 +14,7 @@ const Wrapper = styled.div`
   /* 자식요소에게 flex-grow를 주기 위함 */
   display: flex;
   flex-direction: column;
+  align-items: center;
   overflow: hidden;
 `;
 
@@ -35,10 +36,17 @@ const Form = styled.form`
 `;
 
 const Title = styled.h2`
+  user-select: none;
   text-align: center;
   font-weight: 600;
   margin-bottom: 10px;
   font-size: 18px;
+  line-height: 40px;
+  background-color: #3b3b98;
+  color: #f8efba;
+  width: 60%;
+  height: 40px;
+  border-radius: 5px;
 `;
 
 interface IBoardProps {
@@ -63,6 +71,7 @@ const Area = styled.div<IAreaProps>`
   flex-grow: 1;
   transition: background-color 0.3s ease-in-out;
   padding: 20px;
+  width: 100%;
 `;
 
 interface IForm {

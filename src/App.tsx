@@ -10,21 +10,59 @@ const Wrapper = styled.div`
   margin: 0 auto;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  /* height: 100vh; */
 `;
 
 const Boards = styled.div`
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  /* align-items: flex-start; */
+  flex-wrap: wrap;
   width: 100%;
   gap: 10px;
 `;
 
+const AddBoard = styled.form`
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  height: 250px;
+`;
+
+const Input = styled.input`
+  font-size: 16px;
+  border: 0;
+  background-color: white;
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  margin: 0 auto;
+`;
+
 function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
+
+  const addBoard = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    // console.log(event.currentTarget.boardName.value);
+    const input = event.currentTarget.boardName;
+    setToDos((allBoards) => {
+      return {
+        ...allBoards,
+        [input.value]: [],
+      };
+    });
+    input.value = "";
+    input.blur();
+  };
+
   const onDragEnd = (info: DropResult) => {
-    console.log(info);
+    // console.log(info);
     const { destination, source } = info;
     // destination이 undefined일 경우 kill function
     if (!destination) return;
@@ -62,15 +100,20 @@ function App() {
     }
   };
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Wrapper>
-        <Boards>
-          {Object.keys(toDos).map((boardId) => (
-            <Board boardId={boardId} key={boardId} toDos={toDos[boardId]} />
-          ))}
-        </Boards>
-      </Wrapper>
-    </DragDropContext>
+    <>
+      <AddBoard onSubmit={addBoard}>
+        <Input id="boardName" placeholder="Add New Board (Press Enter)" />
+      </AddBoard>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Wrapper>
+          <Boards>
+            {Object.keys(toDos).map((boardId) => (
+              <Board boardId={boardId} key={boardId} toDos={toDos[boardId]} />
+            ))}
+          </Boards>
+        </Wrapper>
+      </DragDropContext>
+    </>
   );
 }
 export default App;

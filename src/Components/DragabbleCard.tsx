@@ -1,15 +1,22 @@
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import styled from "styled-components";
+import { FiX } from "react-icons/fi";
+import { useRecoilState } from "recoil";
+import { toDoState } from "../atoms";
 
 const Card = styled.div<{ isDragging: boolean }>`
   border-radius: 5px;
   margin-bottom: 5px;
   padding: 10px;
+  font-size: 18px;
+  line-height: 14px;
   background-color: ${(props) =>
     props.isDragging ? "#e4f2ff" : props.theme.cardColor};
   box-shadow: ${(props) =>
     props.isDragging ? "0px 2px 5px rgba(0, 0, 0, 0.05)" : "none"};
+  display: flex;
+  justify-content: space-between;
 `;
 
 interface IDragabbleCardProps {
@@ -19,6 +26,10 @@ interface IDragabbleCardProps {
 }
 
 function DragabbleCard({ toDoId, toDoText, index }: IDragabbleCardProps) {
+  const [toDos, setToDos] = useRecoilState(toDoState);
+  const removeItem = (props: string) => {
+    console.log(toDos);
+  };
   return (
     <Draggable draggableId={toDoId + ""} index={index}>
       {(magic, snapshot) => (
@@ -29,6 +40,11 @@ function DragabbleCard({ toDoId, toDoText, index }: IDragabbleCardProps) {
           {...magic.draggableProps}
         >
           {toDoText}
+          <FiX
+            onClick={() =>
+              removeItem(magic.draggableProps["data-rbd-draggable-id"])
+            }
+          />
         </Card>
       )}
     </Draggable>
