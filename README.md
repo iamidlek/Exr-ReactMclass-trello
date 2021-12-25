@@ -2,8 +2,8 @@
 
 ## Challenge
 
-- Own styling
-- Use localStorage
-- Removable
-- user can create New Board
-- Changeable order(Boards)
+[x] Own styling
+[x] user can create New Board
+[x] Changeable order(Boards)
+[] Removable
+[] Use localStorage
