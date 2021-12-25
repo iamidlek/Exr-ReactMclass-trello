@@ -1,22 +1,20 @@
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { toDoState } from "./atoms";
+import { toDoState, IToDoState } from "./atoms";
 import Board from "./Components/Board";
+import { Droppable } from "react-beautiful-dnd";
 
 const Wrapper = styled.div`
   display: flex;
   width: 100vw;
   margin: 0 auto;
   justify-content: center;
-  align-items: center;
-  /* height: 100vh; */
 `;
 
 const Boards = styled.div`
   display: flex;
   justify-content: center;
-  /* align-items: flex-start; */
   flex-wrap: wrap;
   width: 100%;
   gap: 10px;
@@ -63,9 +61,27 @@ function App() {
 
   const onDragEnd = (info: DropResult) => {
     // console.log(info);
-    const { destination, source } = info;
+    const { destination, source, type, draggableId } = info;
     // destination이 undefined일 경우 kill function
     if (!destination) return;
+    // 보드 순서 변경
+    if (type === "board") {
+      if (destination.index === source.index) return;
+      setToDos((allBoards) => {
+        const keys = Object.keys(allBoards);
+        keys.splice(source.index, 1);
+        keys.splice(destination.index, 0, draggableId);
+
+        const newBoardList: IToDoState = {};
+        keys.forEach((key) => {
+          newBoardList[key] = allBoards[key];
+        });
+        return newBoardList;
+      });
+      // 위의 return은 setToDos의 retrun
+      // 아래의 return은 if 문에 대한 전체 함수 종료명령
+      return;
+    }
     // same board movement.
     if (destination?.droppableId === source.droppableId) {
       setToDos((allBoards) => {
@@ -74,7 +90,7 @@ function App() {
         // 특정 오브젝트를 잡아서 옮김
         const taskObj = boardCopy[source.index];
         boardCopy.splice(source.index, 1);
-        boardCopy.splice(destination?.index, 0, taskObj);
+        boardCopy.splice(destination.index, 0, taskObj);
         return {
           ...allBoards,
           // 해당 보드만 갱신
@@ -105,13 +121,23 @@ function App() {
         <Input id="boardName" placeholder="Add New Board (Press Enter)" />
       </AddBoard>
       <DragDropContext onDragEnd={onDragEnd}>
-        <Wrapper>
-          <Boards>
-            {Object.keys(toDos).map((boardId) => (
-              <Board boardId={boardId} key={boardId} toDos={toDos[boardId]} />
-            ))}
-          </Boards>
-        </Wrapper>
+        <Droppable droppableId="boardList" type="board" direction="horizontal">
+          {(magic) => (
+            <Wrapper>
+              <Boards ref={magic.innerRef}>
+                {Object.keys(toDos).map((boardId, idx) => (
+                  <Board
+                    boardId={boardId}
+                    key={boardId}
+                    toDos={toDos[boardId]}
+                    idx={idx}
+                  />
+                ))}
+              </Boards>
+              {magic.placeholder}
+            </Wrapper>
+          )}
+        </Droppable>
       </DragDropContext>
     </>
   );
