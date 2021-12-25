@@ -6,7 +6,7 @@ export interface ITodo {
 }
 
 // ITodo 모양을한 array
-interface IToDoState {
+export interface IToDoState {
   [key: string]: ITodo[];
 }
 
