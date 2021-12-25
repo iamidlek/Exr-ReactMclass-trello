@@ -27,8 +27,8 @@ interface IDragabbleCardProps {
 
 function DragabbleCard({ toDoId, toDoText, index }: IDragabbleCardProps) {
   const [toDos, setToDos] = useRecoilState(toDoState);
-  const removeItem = (props: string) => {
-    console.log(toDos);
+  const removeItem = (props: object) => {
+    console.log(props);
   };
   return (
     <Draggable draggableId={toDoId + ""} index={index}>
@@ -40,11 +40,7 @@ function DragabbleCard({ toDoId, toDoText, index }: IDragabbleCardProps) {
           {...magic.draggableProps}
         >
           {toDoText}
-          <FiX
-            onClick={() =>
-              removeItem(magic.draggableProps["data-rbd-draggable-id"])
-            }
-          />
+          <FiX onClick={() => removeItem(magic.draggableProps)} />
         </Card>
       )}
     </Draggable>
