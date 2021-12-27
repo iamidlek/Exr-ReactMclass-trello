@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { toDoState, IToDoState } from "./atoms";
 import Board from "./Components/Board";
 import { Droppable } from "react-beautiful-dnd";
+import { useEffect } from "react";
 
 const Wrapper = styled.div`
   display: flex;
@@ -31,7 +32,9 @@ const AddBoard = styled.form`
   height: 250px;
 `;
 
-const Input = styled.input`
+const Input = styled.input.attrs((props) => ({
+  autoComplete: "off",
+}))`
   font-size: 16px;
   border: 0;
   background-color: white;
@@ -115,6 +118,15 @@ function App() {
       });
     }
   };
+
+  useEffect(() => {
+    const memos = localStorage.getItem("myBoard");
+    if (memos === "{}" || memos === null) return;
+    setToDos(JSON.parse(memos));
+  }, []);
+  useEffect(() => {
+    localStorage.setItem("myBoard", JSON.stringify(toDos));
+  }, [toDos]);
   return (
     <>
       <AddBoard onSubmit={addBoard}>
@@ -142,4 +154,5 @@ function App() {
     </>
   );
 }
+
 export default App;
