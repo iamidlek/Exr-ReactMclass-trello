@@ -2,7 +2,7 @@ import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import { FiX } from "react-icons/fi";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { toDoState } from "../atoms";
 
 const Card = styled.div<{ isDragging: boolean }>`
@@ -26,9 +26,16 @@ interface IDragabbleCardProps {
 }
 
 function DragabbleCard({ toDoId, toDoText, index }: IDragabbleCardProps) {
-  const [toDos, setToDos] = useRecoilState(toDoState);
-  const removeItem = (props: object) => {
-    console.log(props);
+  const setToDos = useSetRecoilState(toDoState);
+  const removeItem = (id: string) => {
+    setToDos((allBoards) => {
+      const copyBoard = Object.assign({}, allBoards);
+      const keys = Object.keys(allBoards);
+      keys.forEach((key) => {
+        copyBoard[key] = allBoards[key].filter((x) => x.id !== Number(id));
+      });
+      return copyBoard;
+    });
   };
   return (
     <Draggable draggableId={toDoId + ""} index={index}>
@@ -40,7 +47,11 @@ function DragabbleCard({ toDoId, toDoText, index }: IDragabbleCardProps) {
           {...magic.draggableProps}
         >
           {toDoText}
-          <FiX onClick={() => removeItem(magic.draggableProps)} />
+          <FiX
+            onClick={() =>
+              removeItem(magic.draggableProps["data-rbd-draggable-id"])
+            }
+          />
         </Card>
       )}
     </Draggable>
