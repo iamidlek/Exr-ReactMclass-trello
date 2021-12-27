@@ -5,8 +5,8 @@
 - [x] Own styling
 - [x] user can create New Board
 - [x] Changeable order(Boards)
-- [ ] Removable(Board, Card)
-- [ ] Use localStorage
+- [x] Removable(Board, Card)
+- [x] Use localStorage
 
 ## react-beautiful-dnd
 
