@@ -5,6 +5,16 @@ import styled from "styled-components";
 import DragabbleCard from "./DragabbleCard";
 import { ITodo, toDoState } from "../atoms";
 import { useSetRecoilState } from "recoil";
+import { FiX } from "react-icons/fi";
+
+const Icon = styled.div`
+  user-select: none;
+  font-size: 18px;
+  line-height: 40px;
+  position: absolute;
+  right: 20px;
+  display: none;
+`;
 
 const Wrapper = styled.div<{ isDragging: Boolean }>`
   width: 300px;
@@ -18,6 +28,10 @@ const Wrapper = styled.div<{ isDragging: Boolean }>`
   flex-direction: column;
   align-items: center;
   overflow: hidden;
+  position: relative;
+  &:hover ${Icon} {
+    display: block;
+  }
 `;
 
 const Form = styled.form`
@@ -97,6 +111,13 @@ function Board({ toDos, boardId, idx }: IBoardProps) {
     });
     setValue("toDo", "");
   };
+  const removeBoard = (title: string) => {
+    setToDos((allBoards) => {
+      const copyBoard = Object.assign({}, allBoards);
+      delete copyBoard[title];
+      return copyBoard;
+    });
+  };
   return (
     <Draggable draggableId={boardId} index={idx}>
       {(provide, snapshot) => (
@@ -106,11 +127,19 @@ function Board({ toDos, boardId, idx }: IBoardProps) {
           isDragging={snapshot.isDragging}
         >
           <Title {...provide.dragHandleProps}>{boardId}</Title>
+          <Icon>
+            <FiX
+              onClick={() =>
+                removeBoard(provide.draggableProps["data-rbd-draggable-id"])
+              }
+            />
+          </Icon>
           <Form onSubmit={handleSubmit(onValid)}>
             <input
               {...register("toDo", { required: true })}
               type="text"
               placeholder={`Add task on ${boardId}`}
+              autoComplete="off"
             />
           </Form>
           <Droppable droppableId={boardId}>
